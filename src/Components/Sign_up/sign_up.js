@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import './sign_up.css'
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { PatternFormat } from 'react-number-format';
 import { API_URL } from '../../config';
 
-const Sign_Up = () => {
+const SignUp = () => {
+    const [role, setRole] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [showerr, setShowerr] = useState('');
-    const [passwordLengthError, setPasswordLengthError] = useState(false);
 
     const navigate = useNavigate();
 
@@ -17,11 +18,6 @@ const Sign_Up = () => {
         e.preventDefault();
 
         // API Call
-
-        if (password.length < 8) {
-          setPasswordLengthError(true);
-          return;
-        }
 
         const response = await fetch(`${API_URL}/api/auth/register`, {
             method: "POST",
@@ -33,7 +29,7 @@ const Sign_Up = () => {
                 email: email,
                 password: password,
                 phone: phone,
-
+                role: role,
             }),
         });
 
@@ -42,6 +38,7 @@ const Sign_Up = () => {
         if (json.authtoken) {
             sessionStorage.setItem("auth-token", json.authtoken);
             sessionStorage.setItem("name", name);
+            sessionStorage.setItem("role", role);
             // phone and email
             sessionStorage.setItem("phone", phone);
             sessionStorage.setItem("email", email);
@@ -60,53 +57,88 @@ const Sign_Up = () => {
     };
 
     return (
-        <div className="container" style={{marginTop:'5%'}}>
-          <div className="signup-grid">
-            <div className="signup-text">
-                    <h1>Sign Up</h1>
-                    {/* {signupRoleText && <div className="signup-role">{signupRoleText}</div>} */}
-            </div>
-
-              <div className="signup-text1" style={{ textAlign: 'left' }}>
-                    Already a member? <span><Link to="/login" style={{ color: '#2190FF' }}> Login</Link></span>
-              </div>
-              <div className="signup-form">
-                <form method="POST" onSubmit={register}>
-                  <div className="form-group">
-                      <label htmlFor="name">Name</label>
-                      <input value={name} type="text" onChange={(e) => setName(e.target.value)} name="name" id="name" className="form-control" placeholder="Enter your name" aria-describedby="helpId" required />
-                  </div>
-
-                  <div className="form-group">
-                      <label htmlFor="phone">Phone</label>
-                      <input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" name="phone" id="phone" className="form-control" placeholder="Enter your phone number" aria-describedby="helpId"  maxLength="10" required/>
-                  </div>
-
-                  <div className="form-group">
-                      <label htmlFor="email">Email</label>
-                      <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" name="email" id="email" className="form-control" placeholder="Enter your email" aria-describedby="helpId" required/>
-                      {showerr && <div className="err" style={{ color: 'red' }}>{showerr}</div>}
-                  </div>
-
-                  <div className="form-group">
-                      <label htmlFor="password">Password</label>
-                      <input value={password} onChange={(e) => setPassword(e.target.value)} type='password' name="password" id="password" className="form-control" placeholder="Enter your password" aria-describedby="helpId" required/>
-                      {passwordLengthError && password.length < 8 && (
-                          <div className="err" style={{ color: 'red' }}>Password length must be 8 or more</div>
-                      )}
-                  </div>
-
-                  <div className="btn-group">
-                      <button type="submit" className="btn btn-primary mb-2 mr-1 waves-effect waves-light">Submit</button>
-                      <button type="reset" className="btn btn-danger mb-2 waves-effect waves-light">Reset</button>
-                  </div>
-
-                </form>
-               </div>
-          </div>
-        </div>
+        <div>
+            <form className="SignUpForm" method='POST' onSubmit={register}>
+                <div className="Heading">
+                    <div>
+                        <p className="SU_header">Sign Up</p>
+                        <p className="SU_headersubtext">Already a member? <a href="Login" ><span>Login</span></a></p>
+                    </div>
+                </div>
+                <div className="SUF_content">
+                    <div className="SUF_TextInputs">  
+                    <div className="RoleDiv">
+                    <p>Role <span title='This is a required field.'>*</span></p>
+                    <select 
+                    title="Select Role" 
+                    name="role" 
+                    id="role" 
+                    onChange={(e) => setRole(e.target.value)}
+                    required>
+                        <option value="Select Role" disabled selected hidden>Select Role</option>
+                        <option value="Patient">Patient</option>
+                        <option value="Doctor">Doctor</option>
+                    </select>
+                    </div>  
+                    <div className="NameDiv">
+                        <p>Name <span title='This is a required field.'>*</span></p>
+                        <input 
+                        name='Name'
+                        id='Name'
+                        title="Enter Your Name" 
+                        type="text" 
+                        placeholder="Enter your Full Name"
+                        onChange={(e) => setName(e.target.value)}
+                        required />
+                    </div>
+                    <div className="PhoneNumberDiv">
+                        <p>Phone number <span title='This is a required field.'>*</span></p>
+                        <PatternFormat
+                            id='phone'
+                            name='phone' 
+                            type="tel"
+                            format="+1 (###) ###-####" 
+                            mask="_" 
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder='Enter Your Phone Number (XXX)-XXX-XXXX'
+                            required
+                        />
+                    </div>
+                    <div className="EmailDiv">
+                        <p>Email <span title='This is a required field.'>*</span></p>
+                        <input 
+                        name='Email'
+                        id='Email'
+                        title="Enter your Email Address" 
+                        type="email" 
+                        placeholder="Enter your email address"
+                        onChange={(e) => setEmail(e.target.value)}
+                        required />
+                    </div>
+                    <div className="PasswordDiv">
+                        <p>Password <span title='This is a required field.'>*</span></p>
+                        <input 
+                        name='Password'
+                        id='Password'
+                        title="Enter your Password" 
+                        type="password" 
+                        placeholder="Enter your password" 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        required />
+                        <p><small className="PasswordSubText">* Must be more than 8 characters</small></p>
+                    </div>
+                    </div>
+                    <div className="SUF_Buttons">
+                        <button className="SignUpButton" type="submit" value="Sign Up">Sign Up</button> <br></br>
+                        <button className="ResetButton" type="reset" value="Reset">Reset</button>
+                    </div>
+                    {showerr && <div className="err" style={{ color: 'red' }}>{showerr}</div>}
+                </div>
+            
+            </form>
+    </div>
 
     );
 }
 
-export default Sign_Up;
+export default SignUp;

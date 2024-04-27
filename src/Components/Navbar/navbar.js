@@ -69,13 +69,13 @@ const Navbar = () => {
           <a href="/">Home</a>
         </li>
         <li className="link">
-          <a href="#">Appointments</a>
+          <a href="/search/doctors">Appointments</a>
         </li>
         <li className="link">
-          <a href="#">Health Blog</a>
+          <a href="/healthblog">Health Blog</a>
         </li>
         <li className="link">
-          <a href="#">Reviews</a>
+          <a href="/instant-consultation">Reviews</a>
         </li>
         {isLoggedIn ? (
           <>
@@ -105,12 +105,12 @@ const Navbar = () => {
         ) : (
           <> 
             <li className="link">
-              <a href="../Sign_up/sign_up">
+              <a href="../sign_up">
                 <button className="btn1">Sign Up</button>
               </a>
             </li>
             <li className="link">
-              <a href="../Login/login">
+              <a href="../login">
                 <button className="btn1">Login</button>
               </a>
             </li>
