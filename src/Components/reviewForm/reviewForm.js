@@ -90,7 +90,7 @@ const ReviewForm = () => {
                                     </Popup>
                                 ) : (
                                     <button className="give-review-button" disabled>
-                                        Give Review
+                                        Review Already Submitted
                                     </button>
                                 )}
                             </td>
